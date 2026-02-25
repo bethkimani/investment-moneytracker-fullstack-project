@@ -1,59 +1,307 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Money Tracker API (Laravel)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Simple Money Tracker API built with **Laravel Framework 12.53.0**.  
+This is a backend-only assessment. An existing frontend consumes these endpoints.
 
-## About Laravel
+The system allows each user to manage multiple wallets, and each wallet can have income and expense transactions. Balances are calculated dynamically.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Create users (no authentication required).
+- Create multiple wallets per user.
+- Add income and expense transactions to wallets.
+- View a user profile:
+  - All wallets.
+  - Each wallet’s balance.
+  - Total balance across all wallets.
+- View a single wallet:
+  - Wallet balance.
+  - All transactions for that wallet.
+- Basic validation:
+  - Required fields.
+  - Positive amounts.
+  - Transaction type must be `income` or `expense`.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Tech Stack
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP
+- Laravel 12.x
+- MySQL
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Setup
 
-### Premium Partners
+From the project root, go into the backend:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+cd backend
+1. Install dependencies
+bash
+composer install
+2. Environment configuration
+Copy .env.example to .env if needed:
 
-## Contributing
+bash
+cp .env.example .env
+Edit .env:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+text
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://127.0.0.1:8000
 
-## Code of Conduct
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=money_tracker
+DB_USERNAME=root
+DB_PASSWORD=
+Create the money_tracker database in MySQL (e.g. via Laragon / phpMyAdmin).
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3. Generate app key
+bash
+php artisan key:generate
+4. Run migrations
+bash
+php artisan migrate
+# or, if you want a clean DB:
+# php artisan migrate:fresh
+5. Start the server
+bash
+php artisan serve
+# → http://127.0.0.1:8000
+Base API URL: http://127.0.0.1:8000/api
 
-## Security Vulnerabilities
+API Endpoints
+1. Create User (no authentication)
+POST /api/users
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Body:
 
-## License
+json
+{
+  "name": "Beth Kimani"
+}
+Response 201 Created (example):
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+json
+{
+  "id": 1,
+  "name": "Beth Kimani",
+  "wallets": [],
+  "created_at": "...",
+  "updated_at": "..."
+}
+Validation:
+
+name – required, string, max 255.
+
+2. Create Wallet for a User
+POST /api/users/{user}/wallets
+Example: POST /api/users/1/wallets
+
+Body:
+
+json
+{
+  "name": "Savings"
+}
+Response 201 Created:
+
+json
+{
+  "id": 1,
+  "user_id": 1,
+  "name": "Savings",
+  "transactions": [],
+  "created_at": "...",
+  "updated_at": "..."
+}
+Validation:
+
+name – required, string, max 255.
+
+A user can have multiple wallets (e.g. “Savings”, “Business”, etc.).
+
+3. Add Transaction to a Wallet
+POST /api/wallets/{wallet}/transactions
+Example: POST /api/wallets/1/transactions
+
+Income example:
+
+json
+{
+  "type": "income",
+  "amount": 5000,
+  "description": "Salary"
+}
+Expense example:
+
+json
+{
+  "type": "expense",
+  "amount": 2000,
+  "description": "Shopping"
+}
+Response 201 Created:
+
+json
+{
+  "id": 1,
+  "wallet_id": 1,
+  "type": "income",
+  "amount": "5000.00",
+  "description": "Salary",
+  "created_at": "...",
+  "updated_at": "..."
+}
+Validation:
+
+type – required, must be income or expense.
+
+amount – required, numeric, min 0.01.
+
+description – optional, string, max 1000.
+
+Balance rules:
+
+income adds to balance.
+
+expense subtracts from balance.
+
+4. View User Profile (All Wallets + Balances)
+GET /api/users/{user}
+Example: GET /api/users/1
+
+Response (example after one income 5000 and one expense 2000 on wallet 1):
+
+json
+{
+  "id": 1,
+  "name": "Beth Kimani",
+  "total_balance": 3000,
+  "wallets": [
+    {
+      "id": 1,
+      "name": "Savings",
+      "balance": 3000
+    }
+  ]
+}
+total_balance – sum of all wallet balances for the user.
+
+Each wallet’s balance is calculated from its transactions.
+
+5. View Single Wallet (Balance + Transactions)
+GET /api/wallets/{wallet}
+Example: GET /api/wallets/1
+
+Response:
+
+json
+{
+  "id": 1,
+  "name": "Savings",
+  "balance": 3000,
+  "transactions": [
+    {
+      "id": 1,
+      "type": "income",
+      "amount": "5000.00",
+      "description": "Salary",
+      "created_at": "...",
+      "updated_at": "..."
+    },
+    {
+      "id": 2,
+      "type": "expense",
+      "amount": "2000.00",
+      "description": "Shopping",
+      "created_at": "...",
+      "updated_at": "..."
+    }
+  ]
+}
+Models & Relationships
+User
+hasMany(Wallet::class)
+
+Accessor total_balance sums all wallet balances.
+
+Wallet
+belongsTo(User::class)
+
+hasMany(Transaction::class)
+
+Accessor balance calculates:
+
+Sum of income amounts.
+
+Minus sum of expense amounts.
+
+Transaction
+belongsTo(Wallet::class)
+
+Validation Summary
+User
+name – required, string, max 255.
+
+Wallet
+name – required, string, max 255.
+
+Transaction
+type – required, income or expense.
+
+amount – required, numeric, positive.
+
+description – optional.
+
+Testing with Postman (Quick Flow)
+Create User
+
+text
+POST /api/users
+Body:
+
+json
+{ "name": "Beth Kimani" }
+Create Wallet
+
+text
+POST /api/users/1/wallets
+Body:
+
+json
+{ "name": "Savings" }
+Add Income
+
+text
+POST /api/wallets/1/transactions
+Body:
+
+json
+{ "type": "income", "amount": 5000, "description": "Salary" }
+Add Expense
+
+text
+POST /api/wallets/1/transactions
+Body:
+
+json
+{ "type": "expense", "amount": 2000, "description": "Shopping" }
+View Profile
+
+text
+GET /api/users/1
+→ total_balance should be 3000.
+
+View Wallet
+
+text
+GET /api/wallets/1
+→ balance should be 3000.
