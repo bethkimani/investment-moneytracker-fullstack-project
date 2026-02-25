@@ -31,10 +31,12 @@
     </nav>
 
     <!-- Header - Michael -->
-    <div class="header p-4 text-center">
-        <img src="https://i.pravatar.cc/120?u=michael" class="rounded-circle border border-4 border-white mb-3" alt="Michael" width="110">
-        <h2 class="mb-1">Michael</h2>
-        <p class="lead">You’ve officially joined your first investment knowledge club!</p>
+    <div class="card header-card text-center mx-auto mb-4" style="max-width: 480px;">
+        <div class="card-body p-4 bg-dark text-white position-relative">
+            <img src="https://i.pravatar.cc/120?u=michael" class="rounded-circle border border-4 border-white mb-3" alt="Michael" width="110">
+            <h2 class="mb-1">Michael</h2>
+            <p class="lead">You’ve officially joined your first investment knowledge club!</p>
+        </div>
     </div>
 
     <!-- Members Grid -->
@@ -42,7 +44,7 @@
         <div class="row g-3">
             <!-- Benard -->
             <div class="col-6">
-                <div class="member-card bg-danger text-white p-3 text-center">
+                <div class="member-card red text-dark p-3 text-center">
                     <img src="https://i.pravatar.cc/55?u=benard" class="rounded-circle mb-2" width="50">
                     <h6>Benard Madingondo</h6>
                     <div class="member-number">350</div>
@@ -50,7 +52,7 @@
             </div>
             <!-- kigSmall -->
             <div class="col-6">
-                <div class="member-card bg-success text-white p-3 text-center">
+                <div class="member-card green text-dark p-3 text-center">
                     <img src="https://i.pravatar.cc/55?u=kig" class="rounded-circle mb-2" width="50">
                     <h6>kigSmall Foot</h6>
                     <div class="member-number">225</div>
@@ -58,7 +60,7 @@
             </div>
             <!-- Caroline 1 -->
             <div class="col-6">
-                <div class="member-card bg-warning text-dark p-3 text-center">
+                <div class="member-card yellow text-dark p-3 text-center">
                     <img src="https://i.pravatar.cc/55?u=caroline1" class="rounded-circle mb-2" width="50">
                     <h6>Caroline Likol</h6>
                     <div class="member-number">117</div>
@@ -66,7 +68,7 @@
             </div>
             <!-- Caroline 2 -->
             <div class="col-6">
-                <div class="member-card bg-pink text-white p-3 text-center">
+                <div class="member-card pink text-dark p-3 text-center">
                     <img src="https://i.pravatar.cc/55?u=caroline2" class="rounded-circle mb-2" width="50">
                     <h6>Caroline Likol</h6>
                     <div class="member-number">321</div>
@@ -82,12 +84,12 @@
     </div>
 
     <!-- Memberships -->
-    <div class="container py-4">
+    <div class="container py-4" id="membershipCards">
         <div class="card mb-3">
             <div class="card-header foundation-header text-center" data-bs-toggle="collapse" data-bs-target="#foundationDesc" style="cursor:pointer">
                 FOUNDATION MEMBERSHIP
             </div>
-            <div class="collapse" id="foundationDesc">
+            <div class="collapse" id="foundationDesc" data-bs-parent="#membershipCards">
                 <div class="card-body">
                     We invest for you, in shares and in the Mansa-X global fund. Service is free online with your personal representative, but service in the office may have extra charges.
                 </div>
@@ -98,7 +100,7 @@
             <div class="card-header economy-header text-center" data-bs-toggle="collapse" data-bs-target="#economyDesc" style="cursor:pointer">
                 ECONOMY MEMBERSHIP
             </div>
-            <div class="collapse" id="economyDesc">
+            <div class="collapse" id="economyDesc" data-bs-parent="#membershipCards">
                 <div class="card-body">
                     We invest your money for you at a guaranteed rate with the Mansa-X global fund. Service is free online with your personal representative, but service in the office may have extra charges.
                 </div>
@@ -109,7 +111,7 @@
 
     <!-- Footer -->
     <footer class="bg-dark text-light text-center py-4">
-        <small>Facebook Designed ©2024 All Rights Reserved</small><br>
+        <small>Fourfront Management © 2025. All Rights Reserved.</small><br>
         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="32" class="mt-2" alt="WhatsApp">
     </footer>
 
