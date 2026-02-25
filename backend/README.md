@@ -1,9 +1,10 @@
 # Money Tracker API (Laravel)
 
 Simple Money Tracker API built with **Laravel Framework 12.53.0**.  
-This is a backend-only assessment. An existing frontend consumes these endpoints.
+This is a backend-only assessment. An existing frontend consumes these endpoints.  
+**Note:** the `wallets` table includes a `balance` column that the application keeps updated; it is not merely computed lazily. This avoids misleading zero values when inspecting the database manually.
 
-The system allows each user to manage multiple wallets, and each wallet can have income and expense transactions. Balances are calculated dynamically.
+The system allows each user to manage multiple wallets, and each wallet can have income and expense transactions. Balances are calculated dynamically and the current total is also stored in the `wallets.balance` column so it stays in sync with the API responses.
 
 ---
 
@@ -173,6 +174,8 @@ Balance rules:
 income adds to balance.
 
 expense subtracts from balance.
+
+The API logic now updates the `balance` field on the wallet record whenever a transaction is created, ensuring database queries on that column return the correct amount.
 
 4. View User Profile (All Wallets + Balances)
 GET /api/users/{user}

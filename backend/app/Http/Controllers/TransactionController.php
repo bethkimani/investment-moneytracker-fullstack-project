@@ -24,8 +24,13 @@ class TransactionController extends Controller
 
         $transaction = $wallet->transactions()->create($validated);
         
-        // Recalculate wallet balance
-        $wallet->refresh();
+        // update the stored balance column so it stays in sync with computed value
+        // (this is mostly for convenience when inspecting the DB directly)
+        $calculated = $wallet->transactions()
+            ->selectRaw("SUM(CASE WHEN type = 'income' THEN amount ELSE -amount END) as total")
+            ->value('total');
+        $wallet->balance = $calculated ?? 0;
+        $wallet->save();
         
         return response()->json($transaction, 201);
     }
