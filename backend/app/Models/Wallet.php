@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,11 +9,7 @@ class Wallet extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'name', 'balance'];
-
-    protected $casts = [
-        'balance' => 'decimal:2',
-    ];
+    protected $fillable = ['user_id', 'name'];
 
     public function user()
     {
@@ -24,10 +21,17 @@ class Wallet extends Model
         return $this->hasMany(Transaction::class);
     }
 
-    public function getBalanceAttribute($value)
+    // Dynamic balance based on transactions
+    public function getBalanceAttribute()
     {
-        return $this->transactions()->get()->sum(function ($transaction) {
-            return $transaction->type === 'income' ? $transaction->amount : -$transaction->amount;
+        $transactions = $this->relationLoaded('transactions')
+            ? $this->transactions
+            : $this->transactions()->get();
+
+        return $transactions->sum(function ($transaction) {
+            return $transaction->type === 'income'
+                ? $transaction->amount
+                : -$transaction->amount;
         });
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,6 +18,8 @@ class User extends Model
 
     public function getTotalBalanceAttribute()
     {
-        return $this->wallets->sum('balance');
+        return $this->wallets->sum(function ($wallet) {
+            return $wallet->balance;
+        });
     }
 }
